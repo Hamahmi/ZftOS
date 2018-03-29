@@ -18,7 +18,7 @@
 
   #define MAX 100000 // Maximum number of processes in queue
 
-  struct Process intArray[MAX];
+//  struct Process intArray[MAX];
   int front = 0;
   int rear = -1;
   int itemCount = 0;
@@ -93,11 +93,94 @@
   }
 
   long quantumLength;
+  long totalNumberOfTickets;
+  
 
   int final;
 
   struct Process arrivedLate[MAX];
 
+
+int main()
+{
+    FILE *fp = NULL;
+    int processCount = 0;  
+    char inputfile[100];
+    char ch; 
+    // getting number of processes 
+    while(fp ==NULL)
+    {
+    printf("Enter the name of the input file : ");
+    scanf("%s", inputfile);
+ 
+    fp = fopen(inputfile, "r");
+ 
+    if (fp == NULL)
+    {
+        printf("Could not open file %s \n\n", inputfile);
+    }
+    }
+    for (ch = getc(fp); ch != EOF; ch = getc(fp))
+        if (ch == '\n')
+            processCount = processCount + 1;
+    fclose(fp);
+    processCount = processCount-1;
+    printf("The input file %s has %d processes(s)\n ", inputfile, processCount);
+
+    struct Process[processCount];
+
+    // This section is responsible for reading the inputs from the file, creating the processes and inserting them into the queue
+
+    fp = fopen(inputfile, "r");
+    char buff[255];
+    fgets(buff, 255, (FILE*)fp);
+    char *ptr;
+    quantumLength = strtol(buff, &ptr, 10);
+    fgets(buff, 255, (FILE*)fp); // To discard the total tickets input since it is not used in RR
+    totalNumberOfTickets = strtol(buff, &ptr, 10);
+    struct Process proc;
+    int count = 0;
+    int count1 = 0;
+
+    while(fgets(buff, 255, (FILE*)fp)){
+
+
+      char *found;
+      char *str;
+      str = strdup(buff);
+      char a[4][255];
+      int i = 0;
+      while((found = strsep(&str, ",")) != NULL){
+        strcpy(a[i], found);
+        i++;
+      }
+      proc.ProcessID = strtol(a[0], &ptr, 10);
+      proc.ArrivalTime = strtol(a[1], &ptr, 10);
+      proc.CPUBurstTime = strtol(a[2], &ptr, 10);
+      proc.NumberofTickets = strtol(a[3], &ptr, 10);
+      proc.StartTime = -1;
+      proc.EndTime = -1;
+      proc.TotalTimeProcessed = 0;
+      proc.Turnaround = 0;
+      proc.WaitingTime = 0;
+      if(proc.ArrivalTime == 0){
+        insert(proc);
+      }else{
+        arrivedLate[count] = proc; // Bonus
+        count++;
+      }
+      count1++;
+    }
+    fclose(fp);
+
+
+
+ 
+    return 0;
+}
+
+
+/*
   int main(int argc, char *argv[]){
 
   // This section is responsible for reading the inputs from the file, creating the processes and inserting them into the queue
@@ -142,7 +225,7 @@
       count1++;
     }
     fclose(fp);
-    fp = fopen("RR-Output.txt","w");
+    fp = fopen("LOT-Output.txt","w");
 
     // This section is concerned with the actual simulation of the file
     final = size() + count;
@@ -205,3 +288,4 @@
 
     fclose(fp);
   }
+*/
