@@ -18,7 +18,7 @@
 
   #define MAX 100000 // Maximum number of processes in queue
 
-//  struct Process intArray[MAX];
+  struct Process intArray[];
   int front = 0;
   int rear = -1;
   int itemCount = 0;
@@ -41,15 +41,10 @@
 
   void insert(struct Process data) {
 
-    if(!isFull()) {
 
-      if(rear == MAX-1) {
-        rear = -1;
-      }
-
-      intArray[++rear] = data;
-      itemCount++;
-    }
+    intArray[++rear] = data;
+    itemCount++;
+    
   }
 
   struct Process removeData() {
@@ -127,10 +122,10 @@ int main()
     processCount = processCount-1;
     printf("The input file %s has %d processes(s)\n ", inputfile, processCount);
 
-    struct Process[processCount];
+    intArray[processCount];
 
     // This section is responsible for reading the inputs from the file, creating the processes and inserting them into the queue
-
+    
     fp = fopen(inputfile, "r");
     char buff[255];
     fgets(buff, 255, (FILE*)fp);
@@ -174,7 +169,7 @@ int main()
     fclose(fp);
 
 
-
+    
  
     return 0;
 }
