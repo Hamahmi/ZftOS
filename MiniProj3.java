@@ -73,15 +73,15 @@ public class MiniProj3 {
 		}
 
 		public void load_players() {
-			//output "passing player: x to the operator"
-			//""Player x on board, capacity: x"
+			// output "passing player: x to the operator"
+			// ""Player x on board, capacity: x"
 
 		}
 
 		public void run_ride() {
-			// output "Wheel is full, Let's go for a ride 
-			//Threads in this ride are: 
-			//	a, b, c, d, e, ""
+			// output "Wheel is full, Let's go for a ride
+			// Threads in this ride are:
+			// a, b, c, d, e, ""
 
 		}
 
@@ -111,7 +111,7 @@ public class MiniProj3 {
 		public void run() {
 			try {
 				Player.sleep(wt);
-				//output "player wakes up: x"
+				// output "player wakes up: x"
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
