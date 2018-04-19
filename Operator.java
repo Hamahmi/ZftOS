@@ -135,7 +135,9 @@ public class Operator {
 				Player.sleep(waitingTime);
 				System.out.println("player wakes up: " + this.ID);
 				System.out.println("passing player: " + this.ID + " to the operator");
-				queue.add(this);
+				synchronized(queue){
+					queue.add(this);
+				}
 			}catch(InterruptedException | BrokenBarrierException e){}
 		}
 	}
