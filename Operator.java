@@ -90,6 +90,8 @@ public class Operator {
 				gate.await();
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
+				run_ride();
+				end_ride();
 			}catch(InterruptedException | BrokenBarrierException e){}
 		}
 		
@@ -117,6 +119,8 @@ public class Operator {
 			try{
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
+				run_ride();
+				end_ride();
 			}catch(InterruptedException e){}
 		}
 	}
