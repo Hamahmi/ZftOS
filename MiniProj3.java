@@ -92,7 +92,9 @@ public class MiniProj3 {
 			// output "passing player: x to the operator"
 			// ""Player x on board, capacity: x"
 			if(on<capacity){
-				System.out.println("Player " + queue.poll().intValue() + " on board, capacity: " + (on + 1));
+				int player = queue.poll().intValue();
+				System.out.println("Player " + player + " on board, capacity: " + (on + 1));
+				wheel[on] = player;
 				on++;
 			}
 			if(on==capacity){
