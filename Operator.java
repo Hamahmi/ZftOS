@@ -145,9 +145,9 @@ public class Operator {
 			try{
 				gate.await();
 				Player.sleep(waitingTime);
-				System.out.println("player wakes up: " + this.ID);
-				System.out.println("passing player: " + this.ID + " to the operator");
 				synchronized(queue){
+					System.out.println("player wakes up: " + this.ID);
+					System.out.println("passing player: " + this.ID + " to the operator");
 					queue.add(this);
 				}
 			}catch(InterruptedException | BrokenBarrierException e){}
