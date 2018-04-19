@@ -1,8 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BrokenBarrierException;
@@ -22,12 +22,12 @@ public class MiniProj3 {
 		BufferedReader br = new BufferedReader(new FileReader("input-1.txt"));
 		players = new HashMap<Integer, Integer>();
 		String line = br.readLine();
-		int max_wait_time = Integer.parseInt(line);
+		int max_wait_time = Integer.parseInt(line) * 10;
 		nummer = Integer.parseInt(br.readLine());
-		theWheel = new Wheel(5, 0, new ArrayList<Integer>(), max_wait_time);
-		
+		theWheel = new Wheel(5, 0, max_wait_time);
+
 		gate = new CyclicBarrier((nummer + 2));
-		
+
 		theWheel.start();
 
 		line = br.readLine();
@@ -39,10 +39,10 @@ public class MiniProj3 {
 				String[] l = line.split(",");
 
 				int id = Integer.parseInt(l[0]);
-				int wt = Integer.parseInt(l[1]);
+				int wt = Integer.parseInt(l[1]) * 10;
 
 				players.put(id, wt);
-				
+
 				new Player(id, wt).start();
 			}
 			line = br.readLine();
@@ -55,13 +55,11 @@ public class MiniProj3 {
 
 		int capacity;
 		int on;
-		ArrayList<Integer> onboard;
 		int mwt;
 
-		public Wheel(int capacity, int on, ArrayList<Integer> onboard, int mwt) {
+		public Wheel(int capacity, int on, int mwt) {
 			this.capacity = capacity;
 			this.on = on;
-			this.onboard = onboard;
 			this.mwt = mwt;
 		}
 
@@ -79,7 +77,6 @@ public class MiniProj3 {
 		}
 
 		public void wSleep() {
-//			System.out.println("wheel start sleep");
 			try {
 				Wheel.sleep(this.mwt);
 			} catch (InterruptedException e) {
@@ -88,30 +85,24 @@ public class MiniProj3 {
 				run_ride();
 			}
 		}
-		
-		public synchronized void load_players(){
-			// output "passing player: x to the operator"
-			// ""Player x on board, capacity: x"
-			if(on<capacity){
+
+		public synchronized void load_players() {
+			if (on < capacity) {
 				int player = queue.poll().intValue();
 				System.out.println("Player " + player + " on board, capacity: " + (on + 1));
 				wheel[on] = player;
 				nummer--;
 				on++;
 			}
-			if(on==capacity){
+			if (on == capacity) {
 				theWheel.interrupt();
 			}
 		}
 
 		public void run_ride() {
-			
+
 			System.out.println("Wheel is ready, Let's go for a ride");
 			System.out.println("Threads in this ride are:");
-			int i;
-			for (i = 0; i < on; i++) {
-				this.onboard.add(wheel[i]);
-			}
 			for (int t : wheel) {
 				System.out.print(t + ", ");
 			}
@@ -120,16 +111,14 @@ public class MiniProj3 {
 		}
 
 		public void end_ride() {
-			if(nummer==0){
+			if (nummer == 0) {
 				System.exit(0);
 			}
 			on = 0;
 			wheel = new int[5];
-			onboard = new ArrayList<>();
 			System.out.println("wheel start sleep");
-			for(int i : queue){
+			for (Iterator<Integer> iterator = queue.iterator(); iterator.hasNext();)
 				load_players();
-			}
 			wSleep();
 		}
 
@@ -154,7 +143,7 @@ public class MiniProj3 {
 			try {
 				gate.await();
 				Player.sleep(wt);
-				// output "player wakes up: x"
+
 				System.out.println("player wakes up: " + this.id);
 				System.out.println("passing player: " + this.id + " to the operator");
 				synchronized (queue) {
