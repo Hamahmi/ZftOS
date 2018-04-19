@@ -15,6 +15,7 @@ public class MiniProj3 {
 	public static Queue<Integer> queue = new LinkedList<>();
 	public static Wheel theWheel;
 	public static int nummer;
+	public static CyclicBarrier gate;
 
 	public static void main(String[] args) throws IOException, InterruptedException, BrokenBarrierException {
 
@@ -24,10 +25,9 @@ public class MiniProj3 {
 		int max_wait_time = Integer.parseInt(line);
 		nummer = Integer.parseInt(br.readLine());
 		theWheel = new Wheel(5, 0, new ArrayList<Integer>(), max_wait_time);
-
-		final CyclicBarrier gate = new CyclicBarrier((nummer + 2));
 		
-		gate.await();
+		gate = new CyclicBarrier((nummer + 2));
+		
 		theWheel.start();
 
 		line = br.readLine();
@@ -43,7 +43,6 @@ public class MiniProj3 {
 
 				players.put(id, wt);
 				
-				gate.await();
 				new Player(id, wt).start();
 			}
 			line = br.readLine();
@@ -67,7 +66,14 @@ public class MiniProj3 {
 		}
 
 		@Override
-		public void run() {	
+		public void run() {
+			try {
+				gate.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (BrokenBarrierException e) {
+				e.printStackTrace();
+			}
 			wSleep();
 		}
 
@@ -135,6 +141,7 @@ public class MiniProj3 {
 		@Override
 		public void run() {
 			try {
+				gate.await();
 				Player.sleep(wt);
 				// output "player wakes up: x"
 				System.out.println("player wakes up: " + this.id);
@@ -145,6 +152,8 @@ public class MiniProj3 {
 				}
 
 			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (BrokenBarrierException e) {
 				e.printStackTrace();
 			}
 		}
