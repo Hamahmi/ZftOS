@@ -37,19 +37,25 @@ public class Operator {
 				try {
 					gate.await();
 					while(true){
-						//System.out.println("here");
 						synchronized(queue){
-							if(queue.isEmpty()){
-								//Thread.sleep(1);
-							}else{
+							if(queue.isEmpty()){}
+							else{
 								if(wheel.nOnboard < wheel.capacity){
 									Player p = queue.poll();
 									System.out.println("Player " + p.ID + " on board, capacity: " + (wheel.nOnboard + 1));
 									wheel.load_players(p);
 								}
 								if(wheel.nOnboard == wheel.capacity){
+									System.out.println("wheel end sleep");
+									wheel.interrupt();
 									wheel.run_ride();
 									wheel.end_ride();
+									Thread t = new Thread(){
+										public void run(){
+											wheel.sleep();
+										}
+									};
+									t.start();
 								}
 							}
 						}	
@@ -85,9 +91,6 @@ public class Operator {
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
 			}catch(InterruptedException | BrokenBarrierException e){}
-			finally{
-				System.out.println("wheel end sleep");
-			}
 		}
 		
 		public synchronized void load_players(Player player){
@@ -109,13 +112,12 @@ public class Operator {
 			if(totalPlayers==0){
 				System.exit(0);
 			}
+		}
+		public void sleep(){
 			try{
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
 			}catch(InterruptedException e){}
-			finally{
-				System.out.println("wheel end sleep");
-			}
 		}
 	}
 	public static class Player extends Thread{
@@ -133,9 +135,7 @@ public class Operator {
 				Player.sleep(waitingTime);
 				System.out.println("player wakes up: " + this.ID);
 				System.out.println("passing player: " + this.ID + " to the operator");
-				synchronized(queue){
-					queue.add(this);
-				}
+				queue.add(this);
 			}catch(InterruptedException | BrokenBarrierException e){}
 		}
 	}
