@@ -15,7 +15,7 @@ public class Operator {
 	public static Queue<Player> queue = new LinkedList<>();
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader("input-1.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("input-2.txt"));
 		int maxWaitingTime = Integer.parseInt(br.readLine());
 		totalPlayers = Integer.parseInt(br.readLine());
 		wheel = new Wheel(5, maxWaitingTime);
@@ -46,7 +46,6 @@ public class Operator {
 									wheel.load_players(p);
 								}
 								if(wheel.nOnboard == wheel.capacity){
-									System.out.println("wheel end sleep");
 									wheel.interrupt();
 									wheel.run_ride();
 									Thread t = new Thread(){
@@ -109,6 +108,7 @@ public class Operator {
 				t.start();
 				return;
 			}
+			System.out.println("wheel end sleep");
 			System.out.println("Wheel is ready, Let's go for a ride");
 			System.out.println("Threads in this ride are:");
 			for(Player p : onboard){
