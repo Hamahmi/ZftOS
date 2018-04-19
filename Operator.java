@@ -15,7 +15,7 @@ public class Operator {
 	public static Queue<Player> queue = new LinkedList<>();
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader("input-1.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("input-2.txt"));
 		int maxWaitingTime = Integer.parseInt(br.readLine());
 		totalPlayers = Integer.parseInt(br.readLine());
 		wheel = new Wheel(5, maxWaitingTime);
@@ -48,8 +48,7 @@ public class Operator {
 								if(wheel.nOnboard == wheel.capacity){
 									System.out.println("wheel end sleep");
 									wheel.interrupt();
-									wheel.run_ride();
-									wheel.end_ride();
+									//wheel.run_ride();
 									Thread t = new Thread(){
 										public void run(){
 											wheel.sleep();
@@ -90,9 +89,11 @@ public class Operator {
 				gate.await();
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
-				run_ride();
-				end_ride();
+				//run_ride();
 			}catch(InterruptedException | BrokenBarrierException e){}
+			finally{
+				run_ride();
+			}
 		}
 		
 		public synchronized void load_players(Player player){
@@ -107,8 +108,9 @@ public class Operator {
 				System.out.print(p.ID+", ");
 			}
 			System.out.println();
+			end_ride();
 		}
-		public synchronized void end_ride(){
+		public void end_ride(){
 			nOnboard = 0;
 			onboard = new ArrayList<>();
 			if(totalPlayers==0){
@@ -119,9 +121,11 @@ public class Operator {
 			try{
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
-				run_ride();
-				end_ride();
+				//run_ride();
 			}catch(InterruptedException e){}
+			finally{
+				run_ride();
+			}
 		}
 	}
 	public static class Player extends Thread{
