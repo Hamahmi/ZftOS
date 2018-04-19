@@ -15,10 +15,10 @@ public class Operator {
 	public static Queue<Player> queue = new LinkedList<>();
 	
 	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new FileReader("input-2.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("input-1.txt"));
 		int maxWaitingTime = Integer.parseInt(br.readLine());
 		totalPlayers = Integer.parseInt(br.readLine());
-		wheel = new Wheel(5, maxWaitingTime*10);
+		wheel = new Wheel(5, maxWaitingTime);
 		gate = new CyclicBarrier((totalPlayers + 3));
 		wheel.start();
 		String line = "";
@@ -26,7 +26,7 @@ public class Operator {
 			if (!(line.equals(""))) {
 				String[] l = line.split(",");
 				int id = Integer.parseInt(l[0]);
-				int wt = Integer.parseInt(l[1])*10;
+				int wt = Integer.parseInt(l[1]);
 				Player p = new Player(id, wt);
 				p.start();
 			}
@@ -89,11 +89,8 @@ public class Operator {
 				gate.await();
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
-				//run_ride();
+				run_ride();
 			}catch(InterruptedException | BrokenBarrierException e){}
-			finally{
-				//run_ride();
-			}
 		}
 		
 		public synchronized void load_players(Player player){
@@ -102,6 +99,16 @@ public class Operator {
 			onboard.add(player);
 		}
 		public synchronized void run_ride(){
+			if(onboard.size() == 0){
+				System.out.println("wheel end sleep");
+				Thread t = new Thread(){
+					public void run(){
+						wheel.sleep();
+					}
+				};
+				t.start();
+				return;
+			}
 			System.out.println("Wheel is ready, Let's go for a ride");
 			System.out.println("Threads in this ride are:");
 			for(Player p : onboard){
@@ -121,11 +128,8 @@ public class Operator {
 			try{
 				System.out.println("wheel start sleep");
 				Wheel.sleep(maxWaitingTime);
-				//run_ride();
+				run_ride();
 			}catch(InterruptedException e){}
-			finally{
-				//run_ride();
-			}
 		}
 	}
 	public static class Player extends Thread{
