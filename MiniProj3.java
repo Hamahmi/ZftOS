@@ -74,11 +74,12 @@ public class MiniProj3 {
 			} catch (BrokenBarrierException e) {
 				e.printStackTrace();
 			}
+			System.out.println("wheel start sleep");
 			wSleep();
 		}
 
 		public void wSleep() {
-			System.out.println("wheel start sleep");
+//			System.out.println("wheel start sleep");
 			try {
 				Wheel.sleep(this.mwt);
 			} catch (InterruptedException e) {
@@ -95,6 +96,7 @@ public class MiniProj3 {
 				int player = queue.poll().intValue();
 				System.out.println("Player " + player + " on board, capacity: " + (on + 1));
 				wheel[on] = player;
+				nummer--;
 				on++;
 			}
 			if(on==capacity){
@@ -102,7 +104,7 @@ public class MiniProj3 {
 			}
 		}
 
-		public synchronized void run_ride() {
+		public void run_ride() {
 			
 			System.out.println("Wheel is ready, Let's go for a ride");
 			System.out.println("Threads in this ride are:");
@@ -118,9 +120,16 @@ public class MiniProj3 {
 		}
 
 		public void end_ride() {
+			if(nummer==0){
+				System.exit(0);
+			}
 			on = 0;
 			wheel = new int[5];
 			onboard = new ArrayList<>();
+			System.out.println("wheel start sleep");
+			for(int i : queue){
+				load_players();
+			}
 			wSleep();
 		}
 
