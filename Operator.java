@@ -18,7 +18,7 @@ public class Operator {
 		BufferedReader br = new BufferedReader(new FileReader("input-2.txt"));
 		int maxWaitingTime = Integer.parseInt(br.readLine());
 		totalPlayers = Integer.parseInt(br.readLine());
-		wheel = new Wheel(5, maxWaitingTime);
+		wheel = new Wheel(5, maxWaitingTime*10);
 		gate = new CyclicBarrier((totalPlayers + 3));
 		wheel.start();
 		String line = "";
@@ -26,7 +26,7 @@ public class Operator {
 			if (!(line.equals(""))) {
 				String[] l = line.split(",");
 				int id = Integer.parseInt(l[0]);
-				int wt = Integer.parseInt(l[1]);
+				int wt = Integer.parseInt(l[1])*10;
 				Player p = new Player(id, wt);
 				p.start();
 			}
@@ -48,7 +48,7 @@ public class Operator {
 								if(wheel.nOnboard == wheel.capacity){
 									System.out.println("wheel end sleep");
 									wheel.interrupt();
-									//wheel.run_ride();
+									wheel.run_ride();
 									Thread t = new Thread(){
 										public void run(){
 											wheel.sleep();
@@ -92,7 +92,7 @@ public class Operator {
 				//run_ride();
 			}catch(InterruptedException | BrokenBarrierException e){}
 			finally{
-				run_ride();
+				//run_ride();
 			}
 		}
 		
@@ -124,7 +124,7 @@ public class Operator {
 				//run_ride();
 			}catch(InterruptedException e){}
 			finally{
-				run_ride();
+				//run_ride();
 			}
 		}
 	}
