@@ -79,8 +79,9 @@ public class MiniProj3 {
 			System.out.println("wheel start sleep");
 			try {
 				Wheel.sleep(this.mwt);
-			} catch (InterruptedException e) {
-				// System.out.println("full");
+			} catch (InterruptedException e) {} 
+			finally {
+				System.out.println("wheel end sleep");
 				run_ride();
 			}
 
