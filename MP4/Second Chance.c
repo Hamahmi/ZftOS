@@ -143,15 +143,39 @@ int main(int argc, char *argv[]){
             inserted.Modified = false;
           }
           if(isFullP()){
-            // Memory is full, need to evict a page
-            struct Page removed;
-            removed = removeP(0);
-            if(removed.Modified){
-              // The page evicted was modified, need to be written back to disk
-              printf("Page fault on time %d, evicted page: %d (written back to disk), loaded page: %d.\n", time, removed.PageID, inserted.PageID);
-            }else{
-              // The page evicted was NOT modified, just evict it
-              printf("Page fault on time %d, evicted page: %d, loaded page: %d.\n", time, removed.PageID, inserted.PageID);
+            while(array[0].Referenced){
+              struct Page removed;
+              removed = removeP(0);
+              removed.Referenced = false;
+              insertP(removed);
+            }
+            int i;
+            bool flag = false;
+            for (i = 0; i < pageCount; i++){
+              if(!array[i].Referenced && !array[i].Modified){
+                struct Page removed;
+                removed = removeP(i);
+                flag = true;
+                if(removed.Modified){
+                  // The page evicted was modified, need to be written back to disk
+                  printf("Page fault on time %d, evicted page: %d (written back to disk), loaded page: %d.\n", time, removed.PageID, inserted.PageID);
+                }else{
+                  // The page evicted was NOT modified, just evict it
+                  printf("Page fault on time %d, evicted page: %d, loaded page: %d.\n", time, removed.PageID, inserted.PageID);
+                }
+                break;
+              }
+            }
+            if(!flag){
+              struct Page removed;
+              removed = removeP(0);
+              if(removed.Modified){
+                // The page evicted was modified, need to be written back to disk
+                printf("Page fault on time %d, evicted page: %d (written back to disk), loaded page: %d.\n", time, removed.PageID, inserted.PageID);
+              }else{
+                // The page evicted was NOT modified, just evict it
+                printf("Page fault on time %d, evicted page: %d, loaded page: %d.\n", time, removed.PageID, inserted.PageID);
+              }
             }
           }else{
             // Memory not full , just insert it
