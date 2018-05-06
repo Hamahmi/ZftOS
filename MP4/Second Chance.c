@@ -15,7 +15,10 @@ struct Page array[MAXP];
 int pageCount = 0;
 
 void printPage (struct Page page){
-  printf("PageID: %d, Referenced: %d, Modified: %d\n", page.PageID, page.Referenced, page.Modified);
+  if(page.PageID < 10)
+    printf("PageID: %d , Referenced: %d, Modified: %d\n", page.PageID, page.Referenced, page.Modified);
+  else
+    printf("PageID: %d, Referenced: %d, Modified: %d\n", page.PageID, page.Referenced, page.Modified);
 }
 
 bool isEmptyP() {
@@ -144,6 +147,7 @@ int main(int argc, char *argv[]){
           }
           if(isFullP()){
             while(array[0].Referenced){
+              // If R is 1, clear it, put the page at the back until the 1st one's R is 0
               struct Page removed;
               removed = removeP(0);
               removed.Referenced = false;
@@ -152,33 +156,25 @@ int main(int argc, char *argv[]){
             int i;
             bool flag = false;
             for (i = 0; i < pageCount; i++){
+              // Evict the 1st none-modified page
               if(!array[i].Referenced && !array[i].Modified){
                 struct Page removed;
                 removed = removeP(i);
                 flag = true;
-                if(removed.Modified){
-                  // The page evicted was modified, need to be written back to disk
-                  printf("Page fault on time %d, evicted page: %d (written back to disk), loaded page: %d.\n", time, removed.PageID, inserted.PageID);
-                }else{
-                  // The page evicted was NOT modified, just evict it
-                  printf("Page fault on time %d, evicted page: %d, loaded page: %d.\n", time, removed.PageID, inserted.PageID);
-                }
+                // The page evicted was NOT modified, just evict it
+                printf("Page fault on time %d, evicted page: %d, loaded page: %d.\n", time, removed.PageID, inserted.PageID);
                 break;
               }
             }
             if(!flag){
+              // If no pages were evicted (all were modified), evict the 1st page
               struct Page removed;
               removed = removeP(0);
-              if(removed.Modified){
-                // The page evicted was modified, need to be written back to disk
-                printf("Page fault on time %d, evicted page: %d (written back to disk), loaded page: %d.\n", time, removed.PageID, inserted.PageID);
-              }else{
-                // The page evicted was NOT modified, just evict it
-                printf("Page fault on time %d, evicted page: %d, loaded page: %d.\n", time, removed.PageID, inserted.PageID);
-              }
+              // The page evicted was modified, need to be written back to disk
+              printf("Page fault on time %d, evicted page: %d (written back to disk), loaded page: %d.\n", time, removed.PageID, inserted.PageID);
             }
           }else{
-            // Memory not full , just insert it
+            // Memory not full , just insert the page
             printf("Page fault on time %d, evicted page: none, loaded page: %d.\n", time, inserted.PageID);
           }
           insertP(inserted);
@@ -193,7 +189,7 @@ int main(int argc, char *argv[]){
           array[k].Referenced = true;
         }
       }
-      printf("In array at time %d: \n",time);
+      printf("In memory at time %d: \n",time);
       int j;
       for (j = 0; j < pageCount; j++){
           printPage(array[j]);

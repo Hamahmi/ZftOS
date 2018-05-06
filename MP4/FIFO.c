@@ -15,7 +15,10 @@ struct Page array[MAXP];
 int pageCount = 0;
 
 void printPage (struct Page page){
-  printf("PageID: %d, Referenced: %d, Modified: %d\n", page.PageID, page.Referenced, page.Modified);
+  if(page.PageID < 10)
+    printf("PageID: %d , Referenced: %d, Modified: %d\n", page.PageID, page.Referenced, page.Modified);
+  else
+    printf("PageID: %d, Referenced: %d, Modified: %d\n", page.PageID, page.Referenced, page.Modified);
 }
 
 bool isEmptyP() {
@@ -169,7 +172,7 @@ int main(int argc, char *argv[]){
           array[k].Referenced = true;
         }
       }
-      printf("In array at time %d: \n",time);
+      printf("In Memory at time %d: \n",time);
       int j;
       for (j = 0; j < pageCount; j++){
           printPage(array[j]);
